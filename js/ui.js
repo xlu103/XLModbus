@@ -15,8 +15,112 @@ document.addEventListener('DOMContentLoaded', function() {
     const historyContainer = document.getElementById('historyContainer');
     const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 
+    // 数据转换相关元素
+    const decValue = document.getElementById('decValue');
+    const dataFormat = document.getElementById('dataFormat');
+    const convertBtn = document.getElementById('convertBtn');
+    const clearDataBtn = document.getElementById('clearDataBtn');
+    const byteOrderInputs = document.querySelectorAll('input[name="byteOrder"]');
+    const quickValues = document.querySelectorAll('.quick-value');
+
     // 从localStorage加载历史记录
     let messageHistory = JSON.parse(localStorage.getItem('modbusHistory') || '[]');
+
+    // 数据格式转换函数
+    const DataConverter = {
+        // 将数字转换为指定字节数的十六进制字节数组
+        numberToBytes: function(num, byteCount) {
+            const bytes = [];
+            for (let i = 0; i < byteCount; i++) {
+                bytes.push((num >> (8 * (byteCount - 1 - i))) & 0xFF);
+            }
+            return bytes;
+        },
+
+        // 处理字节序
+        reorderBytes: function(bytes, order) {
+            switch (order) {
+                case 'abcd': return bytes;
+                case 'dcba': return bytes.reverse();
+                case 'badc': return [bytes[1], bytes[0], bytes[3], bytes[2]];
+                case 'cdab': return [bytes[2], bytes[3], bytes[0], bytes[1]];
+                default: return bytes;
+            }
+        },
+
+        // 转换浮点数为字节数组
+        floatToBytes: function(num) {
+            const buffer = new ArrayBuffer(4);
+            new Float32Array(buffer)[0] = num;
+            return Array.from(new Uint8Array(buffer));
+        },
+
+        // 转换各种格式
+        convert: function(value, format, byteOrder) {
+            let bytes;
+            const num = parseFloat(value);
+
+            switch (format) {
+                case 'uint16':
+                    if (num < 0 || num > 65535) throw new Error('UINT16 范围：0 到 65535');
+                    bytes = this.numberToBytes(num, 2);
+                    break;
+
+                case 'int16':
+                    if (num < -32768 || num > 32767) throw new Error('INT16 范围：-32768 到 32767');
+                    bytes = this.numberToBytes(num < 0 ? num + 65536 : num, 2);
+                    break;
+
+                case 'uint32':
+                    if (num < 0 || num > 4294967295) throw new Error('UINT32 范围：0 到 4294967295');
+                    bytes = this.numberToBytes(num, 4);
+                    break;
+
+                case 'int32':
+                    if (num < -2147483648 || num > 2147483647) throw new Error('INT32 范围：-2147483648 到 2147483647');
+                    bytes = this.numberToBytes(num < 0 ? num + 4294967296 : num, 4);
+                    break;
+
+                case 'float':
+                    bytes = this.floatToBytes(num);
+                    break;
+
+                default:
+                    throw new Error('不支持的数据格式');
+            }
+
+            // 处理字节序
+            bytes = this.reorderBytes(bytes, byteOrder);
+            
+            // 转换为十六进制字符串
+            return bytes.map(b => b.toString(16).padStart(2, '0').toUpperCase()).join(' ');
+        }
+    };
+
+    // 执行转换
+    function performConversion() {
+        try {
+            const value = decValue.value;
+            const format = dataFormat.value;
+            const byteOrder = document.querySelector('input[name="byteOrder"]:checked').value;
+
+            if (!value) {
+                throw new Error('请输入数值');
+            }
+
+            const result = DataConverter.convert(value, format, byteOrder);
+            
+            // 将结果添加到当前数据值
+            const currentValue = dataValue.value.trim();
+            dataValue.value = currentValue ? currentValue + ' ' + result : result;
+
+            // 清空输入
+            decValue.value = '';
+
+        } catch (error) {
+            alert(error.message);
+        }
+    }
 
     // 显示历史记录
     function displayHistory() {
@@ -212,6 +316,22 @@ document.addEventListener('DOMContentLoaded', function() {
             saveHistory();
             displayHistory();
         }
+    });
+
+    // 数据转换相关事件
+    convertBtn.addEventListener('click', performConversion);
+    clearDataBtn.addEventListener('click', () => {
+        dataValue.value = '';
+        decValue.value = '';
+    });
+
+    // 快速值选择
+    quickValues.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const value = btn.dataset.value;
+            const currentValue = dataValue.value.trim();
+            dataValue.value = currentValue ? currentValue + ' ' + value : value;
+        });
     });
 
     // 绑定输入验证

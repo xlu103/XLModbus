@@ -77,6 +77,34 @@
     white-space: nowrap;
 }
 
+/* 数据转换工具样式 */
+.data-converter {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    margin-top: 10px;
+}
+
+.quick-values {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #dee2e6;
+}
+
+.quick-value {
+    margin: 2px;
+}
+
+.btn-group-wrap {
+    flex-wrap: wrap;
+    gap: 2px;
+}
+
+/* 字节序按钮组样式 */
+.btn-group .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
 /* 历史记录样式 */
 .history-container {
     margin-top: 20px;
