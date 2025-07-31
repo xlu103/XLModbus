@@ -1,0 +1,119 @@
+/* 报文显示样式 */
+.message-display {
+    font-family: monospace;
+    font-size: 1.1em;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    min-height: 60px;
+    white-space: nowrap;
+    overflow-x: auto;
+    position: relative;
+}
+
+/* 报文容器 */
+.message-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.message-text {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+/* 颜色说明样式 */
+.color-legend {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.legend-title {
+    font-weight: bold;
+    color: #495057;
+}
+
+/* 报文字段颜色 */
+.slave-address {
+    color: #dc3545; /* 红色 */
+    padding: 0 2px;
+}
+
+.function-code {
+    color: #0d6efd; /* 蓝色 */
+    padding: 0 2px;
+}
+
+.register-address {
+    color: #198754; /* 绿色 */
+    padding: 0 2px;
+}
+
+.data-content {
+    color: #6f42c1; /* 紫色 */
+    padding: 0 2px;
+}
+
+.crc {
+    color: #fd7e14; /* 橙色 */
+    padding: 0 2px;
+}
+
+/* 注释样式 */
+.message-comment {
+    color: #6c757d;
+    font-style: italic;
+    margin-left: 15px;
+}
+
+/* 复制按钮样式 */
+.copy-btn {
+    padding: 2px 8px;
+    font-size: 0.9em;
+    margin-left: 10px;
+    white-space: nowrap;
+}
+
+/* 历史记录样式 */
+.history-container {
+    margin-top: 20px;
+    border-top: 1px solid #dee2e6;
+    padding-top: 15px;
+}
+
+.history-title {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.history-item {
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background-color: #fff;
+}
+
+.history-item:hover {
+    background-color: #f8f9fa;
+}
+
+.history-timestamp {
+    font-size: 0.8em;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+/* 输入验证样式 */
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875em;
+} 

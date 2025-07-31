@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modbus报文生成器</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 自定义样式 -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Modbus报文生成器</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <!-- 配置面板 -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        报文配置
+                    </div>
+                    <div class="card-body">
+                        <form id="modbusForm">
+                            <!-- 从机地址 -->
+                            <div class="mb-3">
+                                <label for="slaveAddress" class="form-label">从机地址</label>
+                                <input type="number" class="form-control" id="slaveAddress" min="1" max="247" value="1">
+                            </div>
+                            
+                            <!-- 功能码 -->
+                            <div class="mb-3">
+                                <label for="functionCode" class="form-label">功能码</label>
+                                <select class="form-select" id="functionCode">
+                                    <option value="01">01 - 读线圈</option>
+                                    <option value="02">02 - 读离散输入</option>
+                                    <option value="03">03 - 读保持寄存器</option>
+                                    <option value="04">04 - 读输入寄存器</option>
+                                    <option value="05">05 - 写单个线圈</option>
+                                    <option value="06">06 - 写单个寄存器</option>
+                                    <option value="0F">0F - 写多个线圈</option>
+                                    <option value="10">10 - 写多个寄存器</option>
+                                </select>
+                            </div>
+
+                            <!-- 起始地址 -->
+                            <div class="mb-3">
+                                <label for="startAddress" class="form-label">起始地址（十六进制）</label>
+                                <input type="text" class="form-control" id="startAddress" placeholder="0000-FFFF" value="0000" maxlength="4" pattern="[0-9A-Fa-f]{1,4}">
+                                <div class="form-text">请输入1-4位十六进制数字（0-9，A-F）</div>
+                            </div>
+
+                            <!-- 数据长度/值 -->
+                            <div class="mb-3">
+                                <label for="dataValue" class="form-label">数据值</label>
+                                <input type="text" class="form-control" id="dataValue" placeholder="输入十六进制数据，如：01 02 03">
+                                <div class="form-text">多个值用空格分隔</div>
+                            </div>
+
+                            <!-- 注释 -->
+                            <div class="mb-3">
+                                <label for="messageComment" class="form-label">注释</label>
+                                <input type="text" class="form-control" id="messageComment" placeholder="可选">
+                            </div>
+
+                            <button type="button" class="btn btn-primary" id="generateBtn">生成报文</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 报文显示和历史记录面板 -->
+            <div class="col-md-6">
+                <!-- 当前报文 -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        生成的报文
+                    </div>
+                    <div class="card-body">
+                        <!-- 颜色说明 -->
+                        <div class="color-legend mb-3">
+                            <div class="legend-title mb-2">报文字段说明：</div>
+                            <div class="d-flex flex-wrap gap-3">
+                                <span><span class="slave-address">红色</span> - 从机地址</span>
+                                <span><span class="function-code">蓝色</span> - 功能码</span>
+                                <span><span class="register-address">绿色</span> - 寄存器地址</span>
+                                <span><span class="data-content">紫色</span> - 数据内容</span>
+                                <span><span class="crc">橙色</span> - CRC校验</span>
+                            </div>
+                        </div>
+                        <div class="message-container">
+                            <div id="messageDisplay" class="message-display">
+                                <!-- 报文将在这里显示 -->
+                            </div>
+                            <button class="btn btn-sm btn-outline-secondary copy-btn" id="copyBtn">复制</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 历史记录 -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        历史记录
+                        <button class="btn btn-sm btn-outline-danger" id="clearHistoryBtn">清空历史</button>
+                    </div>
+                    <div class="card-body">
+                        <div id="historyContainer">
+                            <!-- 历史记录将在这里显示 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 自定义脚本 -->
+    <script src="js/crc.js"></script>
+    <script src="js/modbus.js"></script>
+    <script src="js/ui.js"></script>
+</body>
+</html> 
